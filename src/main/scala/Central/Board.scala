@@ -1,20 +1,23 @@
 package Central
 
-import scala.io.StdIn.readInt
+import io.StdIn.readInt
+import math.pow
 
 class Board(boardSize: Int) {
 
   private val withWallSize = boardSize + 2
+  val maxTurns: Int = (pow(boardSize, 2) - 4).toInt
+  var turns = 0
 
   val black = "B"
   val white = "W"
   private val wall  = "×"
   private val empty = " "
 
-  var turn = black
+  var currentTurn: String = black
 
-  var pieces = Array.ofDim[String](withWallSize, withWallSize)
-  var fields = Array.ofDim[Boolean](withWallSize, withWallSize)
+  var pieces: Array[Array[String]] = Array.ofDim[String](withWallSize, withWallSize)
+  var fields: Array[Array[Boolean]] = Array.ofDim[Boolean](withWallSize, withWallSize)
 
   for(x <- 0 until withWallSize) {
     for (y <- 0 until withWallSize) {
@@ -44,14 +47,14 @@ class Board(boardSize: Int) {
       nextX += dx
       nextY += dy
     }
-    if(pieces(nextX)(nextY) == turn){
+    if(pieces(nextX)(nextY) == currentTurn){
       count
     }else{
       0
     }
   }
 
-  def checkField() = {
+  def checkField(): Unit = {
     for(x <- 1 to boardSize){
       for(y <- 1 to boardSize){
         fields(x)(y) = false
@@ -68,7 +71,7 @@ class Board(boardSize: Int) {
     }
   }
 
-  def existLegalMove() = {
+  def existLegalMove(): Boolean = {
     var iSExist = false
     for(x <- 1 to boardSize){
       for(y <- 1 to boardSize){
@@ -80,7 +83,7 @@ class Board(boardSize: Int) {
     iSExist
   }
 
-  private[Central] def putPiece() = {
+  private[Central] def putPiece(): Unit = {
     println("Please select tha place where you put new piece.(fields numbers are 1 to " + boardSize + ")")
     print("x(←→): ")
     var x = readInt()
@@ -93,31 +96,31 @@ class Board(boardSize: Int) {
       print("y(↑↓): ")
       y = readInt()
     }
-    pieces(x)(y) = turn
+    pieces(x)(y) = currentTurn
     var count = 0
     for(dx <- -1 to 1){
       for(dy <- -1 to 1){
         count = countTurnOver(x, y, dx, dy)
         for(i <- 1 to count){
-          pieces(x+(i*dx))(y+(i*dy)) = turn
+          pieces(x+(i*dx))(y+(i*dy)) = currentTurn
         }
       }
     }
   }
 
-  private[Central] def changeTurn() = {
-    turn = oppositePiece
+  private[Central] def changeTurn(): Unit = {
+    currentTurn = oppositePiece()
   }
 
   private[Central] def printTurn() = {
-    if(turn == black){
+    if(currentTurn == black){
       "BLACK"
     }else{
       "WHITE"
     }
   }
 
-  private[Central] def printBoard() = {
+  private[Central] def printBoard(): Unit = {
     print("  ")
     for(x <- 0 until withWallSize){
       print(x + "  ")
@@ -136,8 +139,8 @@ class Board(boardSize: Int) {
     }
   }
 
-  private def oppositePiece() = {
-    if(turn == black){
+  private def oppositePiece(): String = {
+    if(currentTurn == black){
       white
     }else{
       black

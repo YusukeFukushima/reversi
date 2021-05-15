@@ -6,24 +6,24 @@ class Master(board: Board, boardSize: Int) {
   private var countBlack = 0
   private var countWhite = 0
 
-  def game() = {
+  def game(): Unit = {
     breakable{
       while(true) {
         println("-" * 50)
-        countStone
-        board.checkField
-        board.printBoard
+        countPieces()
+        board.checkField()
+        board.printBoard()
         if (!board.existLegalMove) {
-          if(board.turn == board.black){
+          if(board.currentTurn == board.black){
             println("BLACK's turn is skipped because there is no place to put the pieces.")
           }else{
             println("WHITE's turn is skipped because there is no place to put the pieces.")
           }
-          board.changeTurn
-          board.checkField
-          board.printBoard
+          board.changeTurn()
+          board.checkField()
+          board.printBoard()
           if (!board.existLegalMove) {
-            if(board.turn == board.black){
+            if(board.currentTurn == board.black){
               println("BLACK's turn is skipped because there is no place to put the pieces.")
             }else{
               println("WHITE's turn is skipped because there is no place to put the pieces.")
@@ -34,16 +34,16 @@ class Master(board: Board, boardSize: Int) {
 
         println("turn: " + board.printTurn)
         println("You can put the piece where marked 1.")
-        board.putPiece
-        board.changeTurn
+        board.putPiece()
+        board.changeTurn()
 
       }
     }
-    countStone
-    judgeWinner
+    countPieces()
+    judgeWinner()
   }
 
-  private def countStone() = {
+  private[Central] def countPieces(): Unit = {
     countBlack = 0
     countWhite = 0
     for(x <- 1 to boardSize){
@@ -59,7 +59,7 @@ class Master(board: Board, boardSize: Int) {
     println("BLACK: " + countBlack + " WHITE: " + countWhite)
   }
 
-  private def judgeWinner() = {
+  private def judgeWinner(): Unit = {
     if(countBlack > countWhite){
       println("Winner is BLACK.")
     }else if(countBlack < countWhite){
