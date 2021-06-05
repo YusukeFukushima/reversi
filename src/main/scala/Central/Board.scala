@@ -83,7 +83,7 @@ class Board(boardSize: Int) {
     iSExist
   }
 
-  private[Central] def putPiece(): Unit = {
+  private[Central] def selectPutPlace(): (Int, Int) = {
     println("Please select tha place where you put new piece.(fields numbers are 1 to " + boardSize + ")")
     print("x(←→): ")
     var x = readInt()
@@ -96,6 +96,10 @@ class Board(boardSize: Int) {
       print("y(↑↓): ")
       y = readInt()
     }
+    (x, y)
+  }
+
+  private[Central] def putPiece(x: Int, y: Int): Unit = {
     pieces(x)(y) = currentTurn
     var count = 0
     for(dx <- -1 to 1){

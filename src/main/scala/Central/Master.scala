@@ -34,7 +34,8 @@ class Master(board: Board, boardSize: Int) {
 
         println("turn: " + board.printTurn)
         println("You can put the piece where marked 1.")
-        board.putPiece()
+        val (selected_x, selected_y) = board.selectPutPlace()
+        board.putPiece(selected_x, selected_y)
         board.changeTurn()
 
       }
