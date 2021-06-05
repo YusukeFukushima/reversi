@@ -15,19 +15,20 @@ class Master(board: Board, boardSize: Int) {
         board.printBoard()
         if (!board.existLegalMove) {
           if(board.currentTurn == board.black){
-            println("BLACK's turn is skipped because there is no place to put the pieces.")
+            println("BLACK's turn is skipped because there is no place to put a piece.")
           }else{
-            println("WHITE's turn is skipped because there is no place to put the pieces.")
+            println("WHITE's turn is skipped because there is no place to put a piece.")
           }
           board.changeTurn()
           board.checkField()
           board.printBoard()
           if (!board.existLegalMove) {
             if(board.currentTurn == board.black){
-              println("BLACK's turn is skipped because there is no place to put the pieces.")
+              println("BLACK's turn is skipped because there is no place to put a piece.")
             }else{
-              println("WHITE's turn is skipped because there is no place to put the pieces.")
+              println("WHITE's turn is skipped because there is no place to put a piece.")
             }
+            println("No one can put a piece")
             break
           }
         }
