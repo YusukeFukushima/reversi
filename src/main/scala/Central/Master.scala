@@ -28,7 +28,7 @@ class Master(board: Board, boardSize: Int) {
             }else{
               println("WHITE's turn is skipped because there is no place to put a piece.")
             }
-            println("No one can put a piece")
+            println("No one can put a piece.Game is Over")
             break
           }
         }
