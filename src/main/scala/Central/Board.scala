@@ -117,7 +117,7 @@ class Board(boardSize: Int) {
         }
       }
     }
-    boardStack = BoardStack(currentTurn, oppositePiece(), (x, y), total, flippedList) :: boardStack
+    boardStack = BoardStack(currentTurn, oppositePiece, (x, y), total, flippedList) :: boardStack
   }
 
   private[Central] def changeTurn(): Unit = {
