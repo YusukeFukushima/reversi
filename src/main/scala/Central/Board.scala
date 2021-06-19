@@ -1,17 +1,19 @@
 package Central
 
 import io.StdIn.readInt
-import math.pow
+
+case class BoardStack(color: String, putPos: (Int, Int), flipNum: Int, flippedPos: List[(Int, Int)])
 
 class Board(boardSize: Int) {
 
   private val withWallSize = boardSize + 2
-  val maxTurns: Int = (pow(boardSize, 2) - 4).toInt
-  var turns = 0
+
+  private[Central] var boardStack: List[BoardStack] = Nil
+  private var flippedList: List[(Int, Int)] = Nil
 
   val black = "B"
   val white = "W"
-  private val wall  = "×"
+  private val wall  = "X"
   private val empty = " "
 
   var currentTurn: String = black
@@ -100,16 +102,21 @@ class Board(boardSize: Int) {
   }
 
   private[Central] def putPiece(x: Int, y: Int): Unit = {
+    flippedList = Nil
     pieces(x)(y) = currentTurn
     var count = 0
+    var total = 0
     for(dx <- -1 to 1){
       for(dy <- -1 to 1){
         count = countTurnOver(x, y, dx, dy)
+        total += count
         for(i <- 1 to count){
           pieces(x+(i*dx))(y+(i*dy)) = currentTurn
+          flippedList = (x+(i*dx), y+(i*dy)) :: flippedList
         }
       }
     }
+    boardStack = BoardStack(currentTurn, (x, y), total, flippedList) :: boardStack
   }
 
   private[Central] def changeTurn(): Unit = {
@@ -118,9 +125,9 @@ class Board(boardSize: Int) {
 
   private[Central] def printTurn() = {
     if(currentTurn == black){
-      "BLACK"
+      "BLACK('O')"
     }else{
-      "WHITE"
+      "WHITE('X')"
     }
   }
 
