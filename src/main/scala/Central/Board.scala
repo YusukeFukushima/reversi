@@ -9,7 +9,7 @@ class Board(boardSize: Int) {
 
   private val withWallSize = boardSize + 2
 
-  private[Central] var boardStack: List[BoardStack] = Nil
+  var boardStack: List[BoardStack] = Nil
   private var flippedList: List[(Int, Int)] = Nil
 
   val black = "B"
