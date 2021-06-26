@@ -133,9 +133,9 @@ class Board(board_size: Int) {
 
   private[Central] def printTurn() = {
     if(current_turn == black){
-      "BLACK('O') turn_count = " + turn_count+1
+      "BLACK('O') turn_count = " + (turn_count+1)
     }else{
-      "WHITE('X') turn_count = " + turn_count+1
+      "WHITE('X') turn_count = " + (turn_count+1)
     }
   }
 
