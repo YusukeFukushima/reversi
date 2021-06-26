@@ -2,6 +2,7 @@ package Central
 
 import io.StdIn.readInt
 
+
 case class BoardStack(color: String, opponent_color: String, put_pos: (Int, Int), flip_num: Int, flipped_pos: List[(Int,
 Int)])
 
@@ -9,8 +10,11 @@ class Board(board_size: Int) {
 
   private val with_wall_size = board_size + 2
 
+  val MAX_TURNS: Int = (math.pow(board_size, 2) - 4).toInt
+
   var board_stack: List[BoardStack] = List(BoardStack("Sp", " ", (0, 0), 0, List((0,0))))
   private var flipped_list: List[(Int, Int)] = Nil
+  var movable_pos: List[(Int, Int)] = Nil
 
   val black = "B"
   val white = "W"
@@ -18,6 +22,7 @@ class Board(board_size: Int) {
   private val empty = " "
 
   var current_turn: String = black
+  var turn_count = 0
 
   var pieces: Array[Array[String]] = Array.ofDim[String](with_wall_size, with_wall_size)
   var movable_fields: Array[Array[Boolean]] = Array.ofDim[Boolean](with_wall_size, with_wall_size)
@@ -66,6 +71,7 @@ class Board(board_size: Int) {
             for(dy <- -1 to 1){
               if(countTurnOver(x, y, dx, dy) != 0){
                 movable_fields(x)(y) = true
+                movable_pos = (x, y) :: movable_pos
               }
             }
           }
@@ -102,7 +108,7 @@ class Board(board_size: Int) {
     (x, y)
   }
 
-  private[Central] def putPiece(x: Int, y: Int): Unit = {
+  def putPiece(x: Int, y: Int): Unit = {
     flipped_list = Nil
     pieces(x)(y) = current_turn
     var count = 0
@@ -122,13 +128,14 @@ class Board(board_size: Int) {
 
   private[Central] def changeTurn(): Unit = {
     current_turn = oppositePiece()
+    turn_count = turn_count + 1
   }
 
   private[Central] def printTurn() = {
     if(current_turn == black){
-      "BLACK('O')"
+      "BLACK('O') turn_count = " + turn_count+1
     }else{
-      "WHITE('X')"
+      "WHITE('X') turn_count = " + turn_count+1
     }
   }
 
