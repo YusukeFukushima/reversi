@@ -2,7 +2,6 @@ package Central
 
 import io.StdIn.readInt
 
-
 case class BoardStack(color: String, opponent_color: String, put_pos: (Int, Int), flip_num: Int, flipped_pos: List[(Int,
 Int)])
 
