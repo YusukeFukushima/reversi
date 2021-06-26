@@ -11,7 +11,7 @@ class Master(board: Board, board_size: Int) {
       while(true) {
         println("-" * 50)
         countPieces()
-        board.checkField()
+        board.checkField(board.pieces, board.current_turn, board.oppositePiece())
         board.printBoard()
         if (!board.existLegalMove) {
           if(board.current_turn == board.black){
@@ -20,7 +20,7 @@ class Master(board: Board, board_size: Int) {
             println("WHITE's turn is skipped because there is no place to put a piece.")
           }
           board.changeTurn()
-          board.checkField()
+          board.checkField(board.pieces, board.current_turn, board.oppositePiece())
           board.printBoard()
           if (!board.existLegalMove) {
             if(board.current_turn == board.black){

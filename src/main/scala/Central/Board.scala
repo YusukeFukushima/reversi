@@ -46,30 +46,30 @@ class Board(board_size: Int) {
   pieces(with_wall_size/2)(with_wall_size/2-1) = white
   pieces(with_wall_size/2)(with_wall_size/2) = black
 
-  private def countTurnOver(x: Int, y: Int, dx: Int, dy: Int) = {
+  private def countTurnOver(x: Int, y: Int, dx: Int, dy: Int, checked_pieces: Array[Array[String]], current_color: String, opponent_color: String) = {
     var count = 0
     var next_x = x + dx
     var next_y = y + dy
-    while(pieces(next_x)(next_y) == oppositePiece){
+    while(checked_pieces(next_x)(next_y) == opponent_color){
       count += 1
       next_x += dx
       next_y += dy
     }
-    if(pieces(next_x)(next_y) == current_turn){
+    if(checked_pieces(next_x)(next_y) == current_color){
       count
     }else{
       0
     }
   }
 
-  def checkField(): Unit = {
+  def checkField(checked_pieces: Array[Array[String]], current_color: String, opponent_color: String): Unit = {
     for(x <- 1 to board_size){
       for(y <- 1 to board_size){
         movable_fields(x)(y) = false
-        if(pieces(x)(y) == empty){
+        if(checked_pieces(x)(y) == empty){
           for(dx <- -1 to 1){
             for(dy <- -1 to 1){
-              if(countTurnOver(x, y, dx, dy) != 0){
+              if(countTurnOver(x, y, dx, dy, checked_pieces, current_color, opponent_color) != 0){
                 movable_fields(x)(y) = true
                 movable_pos = (x, y) :: movable_pos
               }
@@ -115,7 +115,7 @@ class Board(board_size: Int) {
     var total = 0
     for(dx <- -1 to 1){
       for(dy <- -1 to 1){
-        count = countTurnOver(x, y, dx, dy)
+        count = countTurnOver(x, y, dx, dy, pieces, current_turn, oppositePiece())
         total += count
         for(i <- 1 to count){
           pieces(x+(i*dx))(y+(i*dy)) = current_turn
@@ -125,6 +125,32 @@ class Board(board_size: Int) {
     }
     board_stack = BoardStack(current_turn, oppositePiece(), (x, y), total, flipped_list) :: board_stack
   }
+
+  def isGameOver(): Boolean = {
+    // ターン数判定
+    if(turn_count == MAX_TURNS) return true
+    // 手番プレイヤーの打ち手の存在判定
+    if(existLegalMove()) return false
+
+    val copied_pieces = pieces
+
+    // 手番でないプレイヤーの打ち手の存在判定
+    checkField(copied_pieces, oppositePiece(), current_turn)
+    if(existLegalMove()) return false
+
+    true
+  }
+
+  def pass(): Boolean = {
+    if(existLegalMove()) return false
+
+    if(isGameOver()) return false
+
+    board_stack = BoardStack(current_turn, oppositePiece(), (0, 0), 0, Nil) :: board_stack
+    true
+  }
+
+  // undoメソッドの実装
 
   private[Central] def changeTurn(): Unit = {
     current_turn = oppositePiece()
@@ -158,7 +184,7 @@ class Board(board_size: Int) {
     }
   }
 
-  private def oppositePiece(): String = {
+  def oppositePiece(): String = {
     if(current_turn == black){
       white
     }else{
