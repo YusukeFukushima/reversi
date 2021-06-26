@@ -2,9 +2,9 @@ package Central
 
 import scala.util.control.Breaks._
 
-class Master(board: Board, boardSize: Int) {
-  private var countBlack = 0
-  private var countWhite = 0
+class Master(board: Board, board_size: Int) {
+  private var count_black = 0
+  private var count_white = 0
 
   def game(): Unit = {
     breakable{
@@ -14,7 +14,7 @@ class Master(board: Board, boardSize: Int) {
         board.checkField()
         board.printBoard()
         if (!board.existLegalMove) {
-          if(board.currentTurn == board.black){
+          if(board.current_turn == board.black){
             println("BLACK's turn is skipped because there is no place to put a piece.")
           }else{
             println("WHITE's turn is skipped because there is no place to put a piece.")
@@ -23,7 +23,7 @@ class Master(board: Board, boardSize: Int) {
           board.checkField()
           board.printBoard()
           if (!board.existLegalMove) {
-            if(board.currentTurn == board.black){
+            if(board.current_turn == board.black){
               println("BLACK's turn is skipped because there is no place to put a piece.")
             }else{
               println("WHITE's turn is skipped because there is no place to put a piece.")
@@ -46,25 +46,25 @@ class Master(board: Board, boardSize: Int) {
   }
 
   private[Central] def countPieces(): Unit = {
-    countBlack = 0
-    countWhite = 0
-    for(x <- 1 to boardSize){
-      for(y <- 1 to boardSize){
+    count_black = 0
+    count_white = 0
+    for(x <- 1 to board_size){
+      for(y <- 1 to board_size){
 
         if(board.pieces(x)(y) == board.black){
-          countBlack += 1
+          count_black += 1
         }else if(board.pieces(x)(y) == board.white){
-          countWhite += 1
+          count_white += 1
         }
       }
     }
-    println("BLACK: " + countBlack + " WHITE: " + countWhite)
+    println("BLACK: " + count_black + " WHITE: " + count_white)
   }
 
   private def judgeWinner(): Unit = {
-    if(countBlack > countWhite){
+    if(count_black > count_white){
       println("Winner is BLACK.")
-    }else if(countBlack < countWhite){
+    }else if(count_black < count_white){
       println("Winner is WHITE.")
     }else{
       println("This game is draw.")

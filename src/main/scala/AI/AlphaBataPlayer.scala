@@ -7,7 +7,6 @@ class AlphaBataPlayer extends {
   val wldDepth = 15
   val perfectDepth = 13
 } with ComputerPlayer {
-  override def move(board: Board) = {
-
+  def move(board: Board): Unit = {
   }
 }

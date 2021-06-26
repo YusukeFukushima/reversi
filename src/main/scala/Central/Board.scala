@@ -2,55 +2,55 @@ package Central
 
 import io.StdIn.readInt
 
-case class BoardStack(color: String, opponentColor: String, putPos: (Int, Int), flipNum: Int, flippedPos: List[(Int,
+case class BoardStack(color: String, opponent_color: String, put_pos: (Int, Int), flip_num: Int, flipped_pos: List[(Int,
 Int)])
 
-class Board(boardSize: Int) {
+class Board(board_size: Int) {
 
-  private val withWallSize = boardSize + 2
+  private val with_wall_size = board_size + 2
 
-  var boardStack: List[BoardStack] = List(BoardStack("Sp", " ", (0, 0), 0, List((0,0))))
-  private var flippedList: List[(Int, Int)] = Nil
+  var board_stack: List[BoardStack] = List(BoardStack("Sp", " ", (0, 0), 0, List((0,0))))
+  private var flipped_list: List[(Int, Int)] = Nil
 
   val black = "B"
   val white = "W"
   private val wall  = "X"
   private val empty = " "
 
-  var currentTurn: String = black
+  var current_turn: String = black
 
-  var pieces: Array[Array[String]] = Array.ofDim[String](withWallSize, withWallSize)
-  var fields: Array[Array[Boolean]] = Array.ofDim[Boolean](withWallSize, withWallSize)
+  var pieces: Array[Array[String]] = Array.ofDim[String](with_wall_size, with_wall_size)
+  var movable_fields: Array[Array[Boolean]] = Array.ofDim[Boolean](with_wall_size, with_wall_size)
 
-  for(x <- 0 until withWallSize) {
-    for (y <- 0 until withWallSize) {
+  for(x <- 0 until with_wall_size) {
+    for (y <- 0 until with_wall_size) {
       pieces(x)(y) = empty
-      fields(x)(y) = false
+      movable_fields(x)(y) = false
     }
   }
 
-  for(i <- 0 until withWallSize){
+  for(i <- 0 until with_wall_size){
     pieces(0)(i) = wall
-    pieces(withWallSize-1)(i) = wall
+    pieces(with_wall_size-1)(i) = wall
     pieces(i)(0) = wall
-    pieces(i)(withWallSize-1) = wall
+    pieces(i)(with_wall_size-1) = wall
   }
 
-  pieces(withWallSize/2-1)(withWallSize/2-1) = black
-  pieces(withWallSize/2-1)(withWallSize/2) = white
-  pieces(withWallSize/2)(withWallSize/2-1) = white
-  pieces(withWallSize/2)(withWallSize/2) = black
+  pieces(with_wall_size/2-1)(with_wall_size/2-1) = black
+  pieces(with_wall_size/2-1)(with_wall_size/2) = white
+  pieces(with_wall_size/2)(with_wall_size/2-1) = white
+  pieces(with_wall_size/2)(with_wall_size/2) = black
 
   private def countTurnOver(x: Int, y: Int, dx: Int, dy: Int) = {
     var count = 0
-    var nextX = x + dx
-    var nextY = y + dy
-    while(pieces(nextX)(nextY) == oppositePiece){
+    var next_x = x + dx
+    var next_y = y + dy
+    while(pieces(next_x)(next_y) == oppositePiece){
       count += 1
-      nextX += dx
-      nextY += dy
+      next_x += dx
+      next_y += dy
     }
-    if(pieces(nextX)(nextY) == currentTurn){
+    if(pieces(next_x)(next_y) == current_turn){
       count
     }else{
       0
@@ -58,14 +58,14 @@ class Board(boardSize: Int) {
   }
 
   def checkField(): Unit = {
-    for(x <- 1 to boardSize){
-      for(y <- 1 to boardSize){
-        fields(x)(y) = false
+    for(x <- 1 to board_size){
+      for(y <- 1 to board_size){
+        movable_fields(x)(y) = false
         if(pieces(x)(y) == empty){
           for(dx <- -1 to 1){
             for(dy <- -1 to 1){
               if(countTurnOver(x, y, dx, dy) != 0){
-                fields(x)(y) = true
+                movable_fields(x)(y) = true
               }
             }
           }
@@ -75,24 +75,24 @@ class Board(boardSize: Int) {
   }
 
   def existLegalMove(): Boolean = {
-    var iSExist = false
-    for(x <- 1 to boardSize){
-      for(y <- 1 to boardSize){
-        if(fields(x)(y)){
-          iSExist = true
+    var iS_exist = false
+    for(x <- 1 to board_size){
+      for(y <- 1 to board_size){
+        if(movable_fields(x)(y)){
+          iS_exist = true
         }
       }
     }
-    iSExist
+    iS_exist
   }
 
   private[Central] def selectPutPlace(): (Int, Int) = {
-    println("Please select tha place where you put new piece.(fields numbers are 1 to " + boardSize + ")")
+    println("Please select tha place where you put new piece.(fields numbers are 1 to " + board_size + ")")
     print("x(←→): ")
     var x = readInt()
     print("y(↑↓): ")
     var y = readInt()
-    while(!fields(x)(y)){
+    while(!movable_fields(x)(y)){
       println("You cannot put a piece in that place. Please select the correct location.")
       print("x(←→): ")
       x = readInt()
@@ -103,8 +103,8 @@ class Board(boardSize: Int) {
   }
 
   private[Central] def putPiece(x: Int, y: Int): Unit = {
-    flippedList = Nil
-    pieces(x)(y) = currentTurn
+    flipped_list = Nil
+    pieces(x)(y) = current_turn
     var count = 0
     var total = 0
     for(dx <- -1 to 1){
@@ -112,20 +112,20 @@ class Board(boardSize: Int) {
         count = countTurnOver(x, y, dx, dy)
         total += count
         for(i <- 1 to count){
-          pieces(x+(i*dx))(y+(i*dy)) = currentTurn
-          flippedList = (x+(i*dx), y+(i*dy)) :: flippedList
+          pieces(x+(i*dx))(y+(i*dy)) = current_turn
+          flipped_list = (x+(i*dx), y+(i*dy)) :: flipped_list
         }
       }
     }
-    boardStack = BoardStack(currentTurn, oppositePiece(), (x, y), total, flippedList) :: boardStack
+    board_stack = BoardStack(current_turn, oppositePiece(), (x, y), total, flipped_list) :: board_stack
   }
 
   private[Central] def changeTurn(): Unit = {
-    currentTurn = oppositePiece()
+    current_turn = oppositePiece()
   }
 
   private[Central] def printTurn() = {
-    if(currentTurn == black){
+    if(current_turn == black){
       "BLACK('O')"
     }else{
       "WHITE('X')"
@@ -134,14 +134,14 @@ class Board(boardSize: Int) {
 
   private[Central] def printBoard(): Unit = {
     print("  ")
-    for(x <- 0 until withWallSize){
+    for(x <- 0 until with_wall_size){
       print(x + "  ")
     }
     print("\n")
-    for(y <- 0 until withWallSize){
+    for(y <- 0 until with_wall_size){
       print(y + " ")
-      for(x <- 0 until withWallSize){
-        if(fields(x)(y)){
+      for(x <- 0 until with_wall_size){
+        if(movable_fields(x)(y)){
           print("1  ")
         }else{
           print(pieces(x)(y) + "  ")
@@ -152,7 +152,7 @@ class Board(boardSize: Int) {
   }
 
   private def oppositePiece(): String = {
-    if(currentTurn == black){
+    if(current_turn == black){
       white
     }else{
       black
