@@ -29,7 +29,7 @@ class AlphaBataPlayer extends {
     for(move <- movables){
       board.putPiece(move._1, move._2)
     }
-    val dummy_x, dummy_y = 0
+    val dummy_x, dummy_y = 0 // 後で消す
     (dummy_x, dummy_y)
   }
 }
